@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { ref, onValue } from 'firebase/database';
+import { ref, onValue,remove } from 'firebase/database';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import database from './firebaseConfig';
 import { getDeviceId } from './getDeviceId';
+import { Alert } from 'react-native';
 
 function NotesListScreen({ navigation }) {
   const [notes, setNotes] = useState([]);
@@ -33,17 +34,41 @@ function NotesListScreen({ navigation }) {
     navigation.navigate('CreateNote', { noteId, note });
   };
 
+  const handleDelete = (noteId) => {
+    Alert.alert(
+      "Radera Anteckning",
+      "Är du säker på att du vill radera denna anteckning?",
+      [
+        { text: "Avbryt" },
+        { text: "Radera", onPress: () => deleteNote(noteId) }
+      ]
+    );
+  };
+
+  const deleteNote = (noteId) => {
+    const noteRef = ref(database, `notes/${deviceId}/${noteId}`);
+    remove(noteRef);
+  };
+  
+
   return (
     <View style={styles.container}>
       <ScrollView>
         {notes.map((note) => (
-          <TouchableOpacity
-            key={note.id}
-            style={styles.note}
-            onPress={() => handleNotePress(note.id, note)}
-          >
-            <Text style={styles.titleText}>{note.title}</Text>
-          </TouchableOpacity>
+          <View key={note.id} style={styles.note}>
+            <TouchableOpacity
+              style={styles.noteContent}
+              onPress={() => handleNotePress(note.id, note)}
+            >
+              <Text style={styles.titleText}>{note.title}</Text>
+              <Text style={styles.dateText}>
+                {note.lastEdited ? new Date(note.lastEdited).toLocaleString() : 'N/A'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleDelete(note.id)} style={styles.deleteButton}>
+              <Text style={styles.deleteText}>•••</Text>
+            </TouchableOpacity>
+          </View>
         ))}
       </ScrollView>
       <TouchableOpacity
@@ -54,7 +79,7 @@ function NotesListScreen({ navigation }) {
       </TouchableOpacity>
     </View>
   );
-}
+        }  
 const styles = StyleSheet.create({
     titleText: {
         fontSize: 18,
@@ -64,23 +89,39 @@ const styles = StyleSheet.create({
       padding: 10,
     },
     note: {
-      padding: 10,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
       borderBottomWidth: 1,
       borderBottomColor: '#ddd',
-    },
+      },
+      noteContent: {
+        // Flex för att hantera titel och datum
+        flex: 1,
+      },
     noteText: {
       fontSize: 18,
     },
+    deleteText: {
+        color: 'black',
+        // ... Stil för radera-knappen
+      },
+    dateText: {
+        fontSize: 12,
+        color: 'grey',
+        // Lägg till ytterligare stil för datumtexten
+      },
     fab: {
       position: 'absolute',
-      width: 56,
-      height: 56,
+      width: 70,
+      height: 70,
       alignItems: 'center',
       justifyContent: 'center',
       right: 20,
-      bottom: 20,
+      bottom: 40,
       backgroundColor: '#007bff',
-      borderRadius: 28,
+      borderRadius: 40,
       elevation: 8,
     },
   });

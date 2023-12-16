@@ -3,6 +3,7 @@ import { View, TextInput, StyleSheet } from 'react-native';
 import { ref, set, push } from 'firebase/database';
 import database from './firebaseConfig';
 import { getDeviceId } from './getDeviceId';
+import { ScrollView, Keyboard } from 'react-native';
 
 function CreateNoteScreen({ route, navigation }) {
   const [note, setNote] = useState({ title: '', content: '' });
@@ -34,18 +35,26 @@ function CreateNoteScreen({ route, navigation }) {
 
   const handleTextChange = (text) => {
     const title = text.split('\n')[0];
-    setNote({ title, content: text });
+    const currentTime = new Date().toISOString(); // ISO-format på tiden
+    setNote({ title, content: text, lastEdited: currentTime });
   };
+  
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Skriv din anteckning..."
-        multiline
-        value={note.content}
-        onChangeText={handleTextChange}
-      />
+      <ScrollView
+        style={styles.scrollView}
+        keyboardDismissMode="on-drag" // Denna prop får tangentbordet att försvinna när användaren drar
+        onScrollBeginDrag={Keyboard.dismiss} // Denna rad får tangentbordet att dra sig tillbaka vid skrollning
+      >
+        <TextInput
+          style={styles.input}
+          placeholder="Skriv din anteckning..."
+          multiline
+          value={note.content}
+          onChangeText={handleTextChange}
+        />
+      </ScrollView>
     </View>
   );
 }
