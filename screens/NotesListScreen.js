@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { ref, onValue,remove } from 'firebase/database';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import database from './firebaseConfig';
-import { getDeviceId } from './getDeviceId';
+import database from '../firebaseConfig';
+import { getDeviceId } from '../getDeviceId';
 import { Alert } from 'react-native';
 
 function NotesListScreen({ navigation }) {

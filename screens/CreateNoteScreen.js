@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { ref, set, push } from 'firebase/database';
-import database from './firebaseConfig';
-import { getDeviceId } from './getDeviceId';
+import database from '../firebaseConfig';
+import { getDeviceId } from '../getDeviceId';
 import { ScrollView, Keyboard } from 'react-native';
 
 function CreateNoteScreen({ route, navigation }) {

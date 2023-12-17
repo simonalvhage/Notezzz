@@ -1,8 +1,8 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import NotesListScreen from './NotesListScreen';
-import CreateNoteScreen from './CreateNoteScreen';
+import NotesListScreen from './screens/NotesListScreen';
+import CreateNoteScreen from './screens/CreateNoteScreen';
 
 const Stack = createStackNavigator();
 
